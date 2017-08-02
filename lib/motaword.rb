@@ -1,3 +1,4 @@
+require 'motaword/access_token'
 require 'motaword/config/authors'
 require 'motaword/config/version'
 require 'motaword/request'
