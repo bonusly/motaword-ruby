@@ -1,0 +1,21 @@
+# User-specific stuff:
+.idea/**
+
+# Gem executable
+*.gem
+
+# Lockfile
+/Gemfile.lock
+
+# Bundle defaults
+/.bundle/
+/.yardoc
+/_yardoc/
+/coverage/
+/doc/
+/pkg/
+/spec/reports/
+/tmp/
+
+# Rspec failure tracking
+.rspec_status
