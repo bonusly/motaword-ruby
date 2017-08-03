@@ -2,26 +2,31 @@ require 'motaword/request'
 
 module Motaword
   class AccessToken
-    # If you see this close your eyes, these shouldn't be public
-    APP_ID     = '4a5800861f1bff02'
-    APP_SECRET = 'c32008d7d6dbd09bd5ece5873aef5819'
+    attr_reader :token, :expires_at, :scope
 
-    def self.create
-      new.create
+    def self.create(app_id, app_secret)
+      response = Request.post('token', body: body, basic_auth: basic_auth(app_id, app_secret))
+      new(response)
     end
 
-    def create
-      Request.post('token', body: body, basic_auth: basic_auth )
+    def self.body
+      { 'grant_type' => 'client_credentials' }
+    end
+
+    def self.basic_auth(app_id, app_secret)
+      { username: app_id, password: app_secret }
     end
 
     private
 
-    def body
-      { 'grant_type' => 'client_credentials' }
+    def initialize(response)
+      @token      = response['access_token']
+      @expires_at = expires_at(response['expires_in'])
+      @scope      = response['scope']
     end
 
-    def basic_auth
-      { username: APP_ID, password: APP_SECRET }
+    def expires_at(expires_in)
+      Time.now + expires_in.to_i
     end
   end
 end

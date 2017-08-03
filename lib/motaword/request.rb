@@ -1,6 +1,5 @@
 require 'httparty'
 require 'motaword/exception'
-require 'motaword/disgusting_http_hack'
 
 module Motaword
   class Request
@@ -15,7 +14,7 @@ module Motaword
     end
 
     def request(method, endpoint, options)
-      headers    = default_headers.merge(options[:headers])
+      headers    = default_headers.merge(options.fetch(:headers, {}))
       body       = options[:body]
       basic_auth = options[:basic_auth]
       url        = "#{Motaword.api_base}#{endpoint}"
@@ -36,8 +35,7 @@ module Motaword
     end
 
     def default_headers
-      { 'Accept'       => 'application/json',
-        'Content-Type' => 'application/json' }
+      { 'Accept'       => 'application/json' }
     end
 
     def parsed_response(response)
@@ -45,7 +43,7 @@ module Motaword
     end
 
     def check_errors(response)
-      Motaword::Exception.all.each do |e|
+      Motaword::Exception.response_errors.each do |e|
         raise e, response if e.response_exception?(response)
       end
     end

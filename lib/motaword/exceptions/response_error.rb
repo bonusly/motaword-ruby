@@ -6,7 +6,13 @@ module Motaword
       def self.response_exception?(response)
         return unless defined? code
 
-        response.fetch('httpCode', nil) == self.code
+        response_code(response) == self.code
+      end
+
+      def self.response_code(response)
+        return response.fetch('httpCode', nil) if response.is_a? Hash
+        return response.code if response.is_a? HTTParty::Response
+        nil
       end
 
       def initialize(response)
