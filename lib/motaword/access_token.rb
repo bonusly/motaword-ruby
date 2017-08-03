@@ -11,14 +11,12 @@ module Motaword
     end
 
     def create
-      Request.post('token',
-                   headers: headers,
-                   basic_auth: basic_auth )
+      Request.post('token', body: body, basic_auth: basic_auth )
     end
 
     private
 
-    def headers
+    def body
       { 'grant_type' => 'client_credentials' }
     end
 

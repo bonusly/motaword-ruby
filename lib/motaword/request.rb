@@ -2,16 +2,8 @@ require 'httparty'
 require 'motaword/exception'
 require 'motaword/disgusting_http_hack'
 
-class FuckingLogger
-  include HTTParty
-  debug_output $stdout
-end
-
 module Motaword
   class Request
-    include HTTParty
-
-    debug_output $stdout
     attr_reader :successful, :error_message
 
     def self.get(*args)
@@ -24,13 +16,11 @@ module Motaword
 
     def request(method, endpoint, options)
       headers    = default_headers.merge(options[:headers])
+      body       = options[:body]
       basic_auth = options[:basic_auth]
       url        = "#{Motaword.api_base}#{endpoint}"
 
-      response = FuckingLogger.send(method,
-                               url,
-                               headers: { 'Content-Type' => 'application/json' },
-                               basic_auth: basic_auth)
+      response = HTTParty.send(method, url, headers: headers, body: body, basic_auth: basic_auth)
 
       check_errors    response
       parsed_response response
